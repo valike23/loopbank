@@ -1,5 +1,7 @@
 package com.loopbank.loopbank.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +25,21 @@ public class AccountController {
         return new ResponseEntity<>(account, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        Account account = accountService.getAccountById(id);
-        return new ResponseEntity<>(account, HttpStatus.OK);
+    @GetMapping("/{account}")
+    public ResponseEntity<Account> getAccountByAccountNumber(@PathVariable String account) {
+        Account acc = accountService.getAccountByAccountNumber(account);
+        if (acc == null) 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else 
+        return new ResponseEntity<>(acc, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity <List<Account>> getAccounts() {
+       List <Account> acc = accountService.getAccounts();
+        if (acc == null) 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else 
+        return new ResponseEntity<>(acc, HttpStatus.OK);
     }
 }
