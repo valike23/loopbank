@@ -57,9 +57,36 @@ public class AccountService {
         return sb.toString();
     }
 
-    public double getBalance(String accountNumber){
+    public Account getBalance(String accountNumber) {
         Account acc = accountRepository.findByAccountNumber(accountNumber);
-        if(acc == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The specified account does not exist.");
-        return acc.getBalance();
+        if (acc == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The specified account does not exist.");
+        return acc;
+    }
+
+    public String withdraw(String accountNumber, double amount) {
+        Account acc = accountRepository.findByAccountNumber(accountNumber);
+        if (acc == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The specified account does not exist.");
+        double balance = acc.getBalance();
+        if (balance >= amount) {
+            acc.setBalance(balance - amount);
+            accountRepository.save(acc);
+            return "success";
+        } else {
+            return "Insufficient Fund";
+        }
+
+    }
+
+    public String deposit(String accountNumber, double amount) {
+        Account acc = accountRepository.findByAccountNumber(accountNumber);
+        if (acc == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The specified account does not exist.");
+        double balance = acc.getBalance();
+        acc.setBalance(balance - amount);
+        accountRepository.save(acc);
+        return "success";
+
     }
 }
